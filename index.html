@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fishy Adventure</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #87CEEB, #1E90FF);
+    }
+    #game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    #fish {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-image: url('https://www.freepnglogos.com/uploads/fish-png/fish-png-transparent-images-png-only-22.png');
+      background-size: cover;
+      top: 50%;
+      left: 10%;
+    }
+    .obstacle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      top: 0;
+      right: 0;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="fish"></div>
+    <div id="score">Score: 0</div>
+  </div>
+
+  <script>
+    const fish = document.getElementById('fish');
+    const gameContainer = document.getElementById('game-container');
+    const scoreElement = document.getElementById('score');
+    let score = 0;
+    let gameOver = false;
+
+    // Move the fish up and down
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowUp') {
+        moveFish(-10); // Move up
+      } else if (event.key === 'ArrowDown') {
+        moveFish(10); // Move down
+      }
+    });
+
+    function moveFish(dy) {
+      const fishRect = fish.getBoundingClientRect();
+      const newY = fishRect.top + dy;
+      if (newY >= 0 && newY + fishRect.height <= window.innerHeight) {
+        fish.style.top = `${newY}px`;
+      }
+    }
+
+    // Create obstacles
+    function createObstacle() {
+      if (gameOver) return;
+
+      const obstacle = document.createElement('div');
+      obstacle.classList.add('obstacle');
+      obstacle.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
+      obstacle.style.left = `${window.innerWidth}px`;
+      gameContainer.appendChild(obstacle);
+
+      // Move the obstacle
+      const obstacleInterval = setInterval(() => {
+        const obstacleRect = obstacle.getBoundingClientRect();
+        obstacle.style.left = `${obstacleRect.left - 5}px`;
+
+        // Check for collision
+        if (checkCollision(fish, obstacle)) {
+          gameOver = true;
+          alert(`Game Over! Your score is ${score}`);
+          clearInterval(obstacleInterval);
+          window.location.reload();
+        }
+
+        // Remove obstacle when it goes off-screen
+        if (obstacleRect.left + obstacleRect.width < 0) {
+          obstacle.remove();
+          score++;
+          scoreElement.textContent = `Score: ${score}`;
+        }
+      }, 20);
+
+      // Create a new obstacle every 2 seconds
+      setTimeout(createObstacle, 2000);
+    }
+
+    // Check for collision between fish and obstacle
+    function checkCollision(fish, obstacle) {
+      const fishRect = fish.getBoundingClientRect();
+      const obstacleRect = obstacle.getBoundingClientRect();
+      return !(
+        fishRect.top > obstacleRect.bottom ||
+        fishRect.bottom < obstacleRect.top ||
+        fishRect.left > obstacleRect.right ||
+        fishRect.right < obstacleRect.left
+      );
+    }
+
+    // Start the game
+    createObstacle();
+  </script>
+</body>
+</html>
