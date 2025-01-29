@@ -17,18 +17,21 @@
     }
     #fish {
       position: absolute;
-      width: 50px;
-      height: 50px;
-      background-image: url('https://www.freepnglogos.com/uploads/fish-png/fish-png-transparent-images-png-only-22.png');
-      background-size: cover;
+      width: 80px; /* Adjust based on your fish image size */
+      height: 50px; /* Adjust based on your fish image size */
+      background-image: url('fish.png'); /* Replace with your fish image file */
+      background-size: contain;
+      background-repeat: no-repeat;
       top: 50%;
       left: 10%;
     }
     .obstacle {
       position: absolute;
       width: 50px;
-      height: 50px;
-      background-color: red;
+      height: 100px;
+      background-image: url('tentacle.png'); /* Replace with your tentacle image file */
+      background-size: contain;
+      background-repeat: no-repeat;
       top: 0;
       right: 0;
     }
@@ -71,13 +74,13 @@
       }
     }
 
-    // Create obstacles
+    // Create obstacles (tentacles)
     function createObstacle() {
       if (gameOver) return;
 
       const obstacle = document.createElement('div');
       obstacle.classList.add('obstacle');
-      obstacle.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
+      obstacle.style.top = `${Math.random() * (window.innerHeight - 100)}px`;
       obstacle.style.left = `${window.innerWidth}px`;
       gameContainer.appendChild(obstacle);
 
